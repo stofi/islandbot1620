@@ -1,0 +1,10 @@
+{
+  "name": "fb-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Kryštof Rainisch <krystof.rainisch@sprites.co>",
+  "license": "MIT",
+  "dependencies": {
+    "fb": "^2.0.0"
+  }
+}
