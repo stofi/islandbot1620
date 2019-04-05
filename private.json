@@ -1,3 +1,4 @@
 {
-  "FACEBOOK_API_KEY": ""
+  "FACEBOOK_ACCESS_TOKEN": "",
+  "PAGE_ID": ""
 }
