@@ -5,6 +5,11 @@
   "author": "Kryštof Rainisch <krystof.rainisch@sprites.co>",
   "license": "MIT",
   "dependencies": {
-    "fb": "^2.0.0"
+    "canvas": "^2.4.1",
+    "chroma-js": "^2.0.3",
+    "fb": "^2.0.0",
+    "node-cron": "^2.0.3",
+    "nouns": "^1.0.1",
+    "seedrandom": "^3.0.1"
   }
 }
