@@ -16,11 +16,6 @@ const db = file.split('\n').filter(i=>i.trim() !== '')
 
 const SEED = nameGenerator(db)
 
-fs.appendFile('db', SEED, function (err) {
-  if (err) console.log('Error saving database');
-  console.log('Database updated.');
-});
-
 seedrandom(SEED, { global: true })
 
 const RADIUS = 21, SIZE = 20, PEAKS = 3, WIDTH = 1440, MAX_ELEVATION = 512
@@ -119,6 +114,11 @@ if (process.argv.length > 2 && process.argv[2] === '--dry-run') {
         return;
       }
       console.log('Post Id: ' + res.post_id);
+      
+      fs.appendFile('db', SEED, function (err) {
+        if (err) console.log('Error saving database');
+        console.log('Database updated.');
+      });
     });
   })
 }
