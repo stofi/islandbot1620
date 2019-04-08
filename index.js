@@ -98,12 +98,18 @@ console.log(`radius: ${RADIUS}`);
 console.log(`size:   ${SIZE}`);
 console.log(`peaks:  ${PEAKS}`);
 
-out.on('finish', () =>  {
-  FB.api('me/photos', 'post', { source: fs.createReadStream(__dirname + '/image.jpeg'), caption: SEED }, function (res) {
-    if(!res || res.error) {
-      console.log(!res ? 'error occurred' : res.error);
-      return;
-    }
-    console.log('Post Id: ' + res.post_id);
-  });
-})
+
+if (process.argv.length > 2 && process.argv[2] === '--dry-run') {
+  console.log();
+  console.log('Finnished dry run.');
+} else {
+  out.on('finish', () =>  {
+    FB.api('me/photos', 'post', { source: fs.createReadStream(__dirname + '/image.jpeg'), caption: SEED }, function (res) {
+      if(!res || res.error) {
+        console.log(!res ? 'error occurred' : res.error);
+        return;
+      }
+      console.log('Post Id: ' + res.post_id);
+    });
+  })
+}
