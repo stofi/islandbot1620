@@ -12,21 +12,24 @@ const db = file.split('\n').filter(i=>i.trim() !== '')
 const SEED = nameGenerator(db)
 seedrandom(SEED, { global: true })
 
-const RADIUS = 2,
-      SIZE = 20,
-      PEAKS = Math.floor(2+Math.random()*5),
+const PEAKS = Math.floor(2+Math.random()*4),
+      RADIUS = 21 - Math.floor(Math.random()*(16 - PEAKS*3)),
+      SIZE = Math.floor(20/RADIUS*21),
       WIDTH = 1440,
       MAX_ELEVATION = 512,
-      RANDOMNESS = Math.random()/3 + 0.5
+      ELEVATION_STEP = .2 - Math.random()/15,
+      RANDOMNESS = .5 + Math.floor(Math.random()*3)/10
 
 const canvas = createCanvas(WIDTH, WIDTH, {pixelFormat: "RGB16_565"})
 const ctx = canvas.getContext("2d");
 
-var map = new Map(RADIUS, WIDTH, WIDTH, SIZE, MAX_ELEVATION, RANDOMNESS);
+var map = new Map(RADIUS, WIDTH, WIDTH, SIZE, MAX_ELEVATION, RANDOMNESS, ELEVATION_STEP);
 
 map.addNRandomPeaks(PEAKS);
 map.elevateAll();
+let map_data = map.draw()
 
+// console.log(map_data.filter(i=>i.z!=0));
 
 const chroma = require("chroma-js")
 const PALETTE = chroma.scale(["14640a", "fbf84f", "6b030a"]).colors(MAX_ELEVATION)
@@ -35,7 +38,7 @@ ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height)
 ctx.fillStyle = '#273ecc'
 ctx.fill()
 
-paint(map.draw(), {
+paint(map_data, {
   hex(hex) {
     let unit = SIZE
     let context = ctx
@@ -103,6 +106,7 @@ console.log(`size:   ${SIZE}`);
 console.log(`peaks:  ${PEAKS}`);
 console.log(`random:  ${RANDOMNESS}`);
 console.log(`elevation:  ${MAX_ELEVATION}`);
+console.log(`step:  ${ELEVATION_STEP}`);
 
 
 

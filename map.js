@@ -1,6 +1,3 @@
-const ELEVATION_STEP = 0.2 // 0 - table mountain island, 1 isolated peaks continuous islands
-
-
 function shuffle(array) {
   var a = array.slice();
   for (let i = a.length; i; i--) {
@@ -51,7 +48,7 @@ class Hexagon {
 }
 
 class Map {
-  constructor(radius, width, height, size, max_elevation, randomness) {
+  constructor(radius, width, height, size, max_elevation, randomness, elevation_step) {
     // console.log(`+ map: ${size}`);
     this.width = width
     this.height = height
@@ -65,7 +62,7 @@ class Map {
     this.keys = shuffle(this.keys);
     this.max_elevation = max_elevation
     this.randomness = randomness
-    console.log(this.keysFlat.length);
+    this.elevation_step = elevation_step
   }
 
   populate() {
@@ -231,12 +228,12 @@ class Map {
         for (var i = 0; i < neighbours.length; i++) {
           if (elevation == null && neighbours[i].elevation != null) {
             elevation = Math.floor(
-              neighbours[i].elevation * (1 - ELEVATION_STEP) +
-                Math.random() * neighbours[i].elevation * ELEVATION_STEP
+              neighbours[i].elevation * (1 - this.elevation_step) +
+                Math.random() * neighbours[i].elevation * this.elevation_step
             );
           } else if (
             neighbours[i].elevation != null &&
-            neighbours[i].elevation < elevation * (1 - ELEVATION_STEP)
+            neighbours[i].elevation < elevation * (1 - this.elevation_step)
           ) {
             elevation = Math.floor(
               (Math.random() * neighbours[i].elevation + elevation) / 2
