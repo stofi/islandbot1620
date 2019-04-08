@@ -1,11 +1,7 @@
-const chroma = require("chroma-js")
-
 const RADIUS = 21,          // Radius of the hexagonal map
-      MAX_ELEVATION = 512,  // Number of possible elevations
       ELEVATION_STEP = 0.2, // 0 - table mountain island, 1 isolated peaks
       RANDOMNESS = 0.5,     // 0 - very rough and diconected shapes, 1 - smooth continuous islands
       SIZE = 20,            // Radius of one hex in px
-      PALETTE = chroma.scale(["14640a", "fbf84f", "6b030a"]).colors(MAX_ELEVATION),
       PEAKS = 3,
       SEED = Math.floor(Math.random() * 1000).toString(16) + "land";
 
@@ -24,82 +20,47 @@ function degToRad(deg) {
 }
 
 class Hexagon {
-  constructor(x, y, z, context, parent, id) {
+  constructor(x, y, z, parent, id) {
     this.x = x;
     this.y = y;
     this.z = z;
     this.id = id;
     this.elevation = null;
-    this.context = context;
     this.parent = parent;
+    this.coors = {type:'hex', x:0, y:0, z:0}
   }
 
-  draw(size) {
-    this.context.save();
+  draw() {
 
     // Start from the center
-    this.context.translate(
-      this.context.canvas.width / 2,
-      this.context.canvas.height / 2
-    );
+    let x = this.parent.width / 2
+    let y = this.parent.height / 2
 
     // translare by coordinates
     // on Z axis
-    this.context.translate(this.z * (size * (5 / 6)), this.z * (size * 1.5));
+    x += this.z * (this.parent.size * (5 / 6))
+    y += this.z * (this.parent.size * 1.5)
     // on X axis
-    this.context.translate(-this.x * (size / 12) * 11, this.x * (1.5 * size));
-    // draw hexagon
-    this.drawPixels(size);
+    x += -this.x * (this.parent.size / 12) * 11
+    y += this.x * (1.5 * this.parent.size)
 
-    this.context.restore();
+    this.coors.x = x
+    this.coors.y = y
+    this.coors.z = this.elevation || 0
+
   }
 
-  drawPixels(unit) {
-    // console.log(`painting ${this.id}`);
-
-    this.context.save();
-    this.context.beginPath();
-
-    var size = unit * 1.02; // slightly increase the size, cleans rounding artifacts
-    var angle;
-
-    angle = degToRad(90); // start at 90deg
-
-    this.context.moveTo(size * Math.cos(angle), size * Math.sin(angle));
-
-    for (var i = 1; i < 7; i++) {
-      // rotate by 60deg
-      angle = degToRad(60 * i + 30);
-      this.context.lineTo(size * Math.cos(angle), size * Math.sin(angle));
-    }
-
-    this.context.closePath();
-
-    this.context.fillStyle = this.getColor();
-
-    this.context.fill();
-    this.context.restore();
-  }
-
-  getColor() {
-    // this is ugly :(
-
-    var color = null;
-
-    if (this.elevation != null && this.elevation > 0) {
-      color = PALETTE[this.elevation - 1];
-    } else {
-      color = "#273ecc";
-    }
-
-    return color;
+  toString() {
+    return `${this.id}: ${this.x.toFixed(2)}, ${this.y.toFixed(2)}, ${this.z.toFixed(2)} @${this.elevation}`
   }
 }
 
 class Map {
-  constructor(size, context) {
+  constructor(radius, width, height, size, max_elevation) {
     // console.log(`+ map: ${size}`);
-    this.context = context;
+    this.width = width
+    this.height = height
+    this.radius = radius;
     this.size = size;
     this.hexagons = {};
     this.keys = [];
@@ -107,19 +68,19 @@ class Map {
     this.keysFlat = this.keys;
     this.waterEdges();
     this.keys = shuffle(this.keys);
+    this.max_elevation = max_elevation
   }
 
   populate() {
     // console.log(`populating`);
-    for (var x = -this.size; x <= this.size; x++) {
-      for (var y = -this.size; y <= this.size; y++) {
-        for (var z = -this.size; z <= this.size; z++) {
+    for (var x = -this.radius; x <= this.radius; x++) {
+      for (var y = -this.radius; y <= this.radius; y++) {
+        for (var z = -this.radius; z <= this.radius; z++) {
           if (x + y + z == 0) {
             this.hexagons[this.hash(x, y, z)] = new Hexagon(
               x,
               y,
               z,
-              this.context,
               this,
               this.hash(x, y, z)
             );
@@ -145,12 +106,12 @@ class Map {
       if (this.hexagons.hasOwnProperty(hexa)) {
         hex = this.hexagons[hexa];
         if (
-          hex.x == this.size ||
-          hex.x == -this.size ||
-          hex.y == this.size ||
-          hex.y == -this.size ||
-          hex.z == this.size ||
-          hex.z == -this.size
+          hex.x == this.radius ||
+          hex.x == -this.radius ||
+          hex.y == this.radius ||
+          hex.y == -this.radius ||
+          hex.z == this.radius ||
+          hex.z == -this.radius
         ) {
           hex.elevation = 0;
 
@@ -163,7 +124,7 @@ class Map {
   addNRandomPeaks(n) {
     // console.log(`adding ${n} peaks`);
     for (var i = 0; i < n; i++) {
-      this.randomFlat().elevation = MAX_ELEVATION;
+      this.randomFlat().elevation = this.max_elevation;
     }
   }
 
@@ -216,16 +177,13 @@ class Map {
   }
 
   draw(width) {
+    width = width || this.size
     // console.log(`drawing width: ${width}`);
-    let context = this.context
-
-    context.rect(0, 0, context.canvas.width, context.canvas.height)
-    context.fillStyle = '#273ecc'
-    context.fill()
 
     this.loopByGrid(hex => {
       hex.draw(width);
     });
+    return Object.keys(this.hexagons).map(key => this.hexagons[key].coors)
   }
 
   getNeigbours(parent) {
@@ -283,7 +241,6 @@ class Map {
             neighbours[i].elevation != null &&
             neighbours[i].elevation < elevation * (1 - ELEVATION_STEP)
           ) {
-            // elevation = Math.floor(Math.random()*neighbours[i].elevation*(1-ELEVATION_STEP))
             elevation = Math.floor(
               (Math.random() * neighbours[i].elevation + elevation) / 2
             );
@@ -291,9 +248,6 @@ class Map {
         }
         if (elevation != null) {
           hex.elevation = elevation;
-          // if (elevation < MAX_ELEVATION/10) {
-          //    hex.elevation = Math.floor(MAX_ELEVATION/10)
-          // }
 
           neighbours = neighbours.filter(function(neighbour) {
             return neighbours.elevation == null;
