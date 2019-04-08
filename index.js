@@ -10,7 +10,16 @@ const {FACEBOOK_ACCESS_TOKEN} = require('./private.json')
 
 FB.setAccessToken(FACEBOOK_ACCESS_TOKEN)
 
-const SEED = nameGenerator()
+const file = fs.readFileSync(__dirname + '/db', 'utf8')
+
+const db = file.split('\n').filter(i=>i.trim() !== '')
+
+const SEED = nameGenerator(db)
+
+fs.appendFile('db', SEED, function (err) {
+  if (err) console.log('Error saving database');
+  console.log('Database updated.');
+});
 
 seedrandom(SEED, { global: true })
 
