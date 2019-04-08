@@ -1,9 +1,5 @@
-const RADIUS = 21,          // Radius of the hexagonal map
-      ELEVATION_STEP = 0.2, // 0 - table mountain island, 1 isolated peaks
-      RANDOMNESS = 0.5,     // 0 - very rough and diconected shapes, 1 - smooth continuous islands
-      SIZE = 20,            // Radius of one hex in px
-      PEAKS = 3,
-      SEED = Math.floor(Math.random() * 1000).toString(16) + "land";
+const ELEVATION_STEP = 0.2, // 0 - table mountain island, 1 isolated peaks
+      RANDOMNESS = 0.5     // 0 - very rough and diconected shapes, 1 - smooth continuous islands
 
 
 function shuffle(array) {
@@ -165,9 +161,9 @@ class Map {
       x,
       y = 0;
     var start = 0;
-    for (z = -RADIUS; z <= RADIUS; z++) {
-      start = z > 0 ? -RADIUS : -(z + RADIUS);
-      for (x = start; x < start + (RADIUS * 2 + 1) + Math.abs(z); x++) {
+    for (z = -this.radius; z <= this.radius; z++) {
+      start = z > 0 ? -this.radius : -(z + this.radius);
+      for (x = start; x < start + (this.radius * 2 + 1) + Math.abs(z); x++) {
         y = 0 - x - z;
         if (this.hexagons.hasOwnProperty(this.hash(x, y, z))) {
           f(this.hexagons[this.hash(x, y, z)]);
