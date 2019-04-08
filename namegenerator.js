@@ -8,8 +8,14 @@ const capitalize = (s) => {
 
 
 
-const nameGenerator = options => {
-  return capitalize(one() + 'land')
+const nameGenerator = (options = {}) => {
+  let name = capitalize(one() + 'land')
+  if (options.hasOwnProperty('db')) {
+    while (options.db.indexOf(name) != -1) {
+      name = capitalize(one() + 'land')
+    }
+  }
+  return name
 }
 
 
