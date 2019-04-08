@@ -4,7 +4,7 @@ const seedrandom = require("seedrandom")
 const { createCanvas } = require("canvas")
 const nameGenerator = require('./namegenerator.js')
 const Map = require('./map.js')
-const paint = require('./Paint.js')
+const paint = require('./paint.js')
 
 const {FACEBOOK_ACCESS_TOKEN} = require('./private.json')
 
