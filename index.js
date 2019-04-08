@@ -6,23 +6,23 @@ const nameGenerator = require('./namegenerator.js')
 const Map = require('./map.js')
 const paint = require('./paint.js')
 
-const {FACEBOOK_ACCESS_TOKEN} = require('./private.json')
-
-FB.setAccessToken(FACEBOOK_ACCESS_TOKEN)
-
 const file = fs.readFileSync(__dirname + '/db', 'utf8')
-
 const db = file.split('\n').filter(i=>i.trim() !== '')
 
 const SEED = nameGenerator(db)
-
 seedrandom(SEED, { global: true })
 
-const RADIUS = 21, SIZE = 20, PEAKS = 3, WIDTH = 1440, MAX_ELEVATION = 512
-const canvas = createCanvas(WIDTH, WIDTH, {pixelFormat: "RGB16_565"})
+const RADIUS = 2,
+      SIZE = 20,
+      PEAKS = Math.floor(2+Math.random()*5),
+      WIDTH = 1440,
+      MAX_ELEVATION = 512,
+      RANDOMNESS = Math.random()/3 + 0.5
 
+const canvas = createCanvas(WIDTH, WIDTH, {pixelFormat: "RGB16_565"})
 const ctx = canvas.getContext("2d");
-var map = new Map(RADIUS, WIDTH, WIDTH, SIZE, MAX_ELEVATION);
+
+var map = new Map(RADIUS, WIDTH, WIDTH, SIZE, MAX_ELEVATION, RANDOMNESS);
 
 map.addNRandomPeaks(PEAKS);
 map.elevateAll();
@@ -68,7 +68,7 @@ paint(map.draw(), {
 
     let color = getColor(hex.z)
 
-    console.log(f(hex.x), f(hex.y), f(hex.z), '  '+color);
+    // console.log(f(hex.x), f(hex.y), f(hex.z), '  '+color);
     context.beginPath();
 
     let size = unit * 1.02; // slightly increase the size, cleans rounding artifacts
@@ -101,7 +101,13 @@ console.log(`new map of ${SEED} is ready`);
 console.log(`radius: ${RADIUS}`);
 console.log(`size:   ${SIZE}`);
 console.log(`peaks:  ${PEAKS}`);
+console.log(`random:  ${RANDOMNESS}`);
+console.log(`elevation:  ${MAX_ELEVATION}`);
 
+
+
+const {FACEBOOK_ACCESS_TOKEN} = require('./private.json')
+FB.setAccessToken(FACEBOOK_ACCESS_TOKEN)
 
 if (process.argv.length > 2 && process.argv[2] === '--dry-run') {
   console.log();
@@ -114,7 +120,7 @@ if (process.argv.length > 2 && process.argv[2] === '--dry-run') {
         return;
       }
       console.log('Post Id: ' + res.post_id);
-      
+
       fs.appendFile('db', SEED, function (err) {
         if (err) console.log('Error saving database');
         console.log('Database updated.');

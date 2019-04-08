@@ -1,5 +1,4 @@
-const ELEVATION_STEP = 0.2, // 0 - table mountain island, 1 isolated peaks
-      RANDOMNESS = 0.5     // 0 - very rough and diconected shapes, 1 - smooth continuous islands
+const ELEVATION_STEP = 0.2 // 0 - table mountain island, 1 isolated peaks continuous islands
 
 
 function shuffle(array) {
@@ -52,7 +51,7 @@ class Hexagon {
 }
 
 class Map {
-  constructor(radius, width, height, size, max_elevation) {
+  constructor(radius, width, height, size, max_elevation, randomness) {
     // console.log(`+ map: ${size}`);
     this.width = width
     this.height = height
@@ -65,6 +64,8 @@ class Map {
     this.waterEdges();
     this.keys = shuffle(this.keys);
     this.max_elevation = max_elevation
+    this.randomness = randomness
+    console.log(this.keysFlat.length);
   }
 
   populate() {
@@ -249,7 +250,7 @@ class Map {
             return neighbours.elevation == null;
           });
 
-          if (neighbours != [] && Math.random() > RANDOMNESS) {
+          if (neighbours != [] && Math.random() > this.randomness) {
             this.elevate(
               neighbours[Math.floor(Math.random() * (neighbours.length - 1))]
             );
