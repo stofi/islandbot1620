@@ -71,7 +71,6 @@ paint(map_data, {
 
     let color = getColor(hex.z)
 
-    // console.log(f(hex.x), f(hex.y), f(hex.z), '  '+color);
     context.beginPath();
 
     let size = unit * 1.02; // slightly increase the size, cleans rounding artifacts
@@ -89,7 +88,17 @@ paint(map_data, {
 
     context.fillStyle = color;
 
-    context.fill();
+    if (false) {
+      context.fillStyle = 'white'
+      context.strokeStyle = 'white'
+      context.stroke()
+      context.font = size*0.7+'px Helvetica'
+      context.fillText(hex.i,-size/4,size/2)
+      // context.fillText(hex.z,-size/4,size/2)
+    } else {
+      context.fill();
+
+    }
     context.restore();
   }
 })
