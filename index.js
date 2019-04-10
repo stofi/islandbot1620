@@ -125,7 +125,7 @@ if (process.argv.length > 2 && process.argv[2] === '--dry-run') {
       }
       console.log('Post Id: ' + res.post_id);
 
-      fs.appendFile('db', SEED, function (err) {
+      fs.appendFile('db', SEED+'\r\n', function (err) {
         if (err) console.log('Error saving database');
         console.log('Database updated.');
       });
