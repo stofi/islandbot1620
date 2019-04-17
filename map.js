@@ -22,26 +22,6 @@ class Hexagon {
     this.coors = {type:'hex', x:0, y:0, z:0}
   }
 
-  draw() {
-
-    // Start from the center
-    let x = this.parent.width / 2
-    let y = this.parent.height / 2
-
-    // translare by coordinates
-    // on Z axis
-    x += this.z * (this.parent.size * (5 / 6))
-    y += this.z * (this.parent.size * 1.5)
-    // on X axis
-    x += -this.x * (this.parent.size / 12) * 11
-    y += this.x * (1.5 * this.parent.size)
-
-    this.coors.x = x
-    this.coors.y = y
-    this.coors.z = this.elevation || 0
-
-  }
-
   toString() {
     return `${this.id}: ${this.x.toFixed(2)}, ${this.y.toFixed(2)}, ${this.z.toFixed(2)} @${this.elevation}`
   }
@@ -171,13 +151,26 @@ class Map {
   }
 
   draw(width) {
-    width = width || this.size
-    // console.log(`drawing width: ${width}`);
-
-    this.loopByGrid(hex => {
-      hex.draw(width);
-    });
+    this.loopByGrid(this.drawHex);
     return Object.keys(this.hexagons).map(key => this.hexagons[key].coors)
+  }
+
+  drawHex(hex) {
+    if (!this) return
+    let x = this.width / 2
+    let y = this.height / 2
+
+    // translare by coordinates
+    // on Z axis
+    x += hex.z * (this.size * (5 / 6))
+    y += hex.z * (this.size * 1.5)
+    // on X axis
+    x += -hex.x * (this.size / 12) * 11
+    y += hex.x * (1.5 * this.size)
+
+    hex.coors.x = x
+    hex.coors.y = y
+    hex.coors.z = hex.elevation || 0
   }
 
   getNeigbours(parent) {
@@ -254,7 +247,7 @@ class Map {
           }
 
           // debugger
-          hex.draw(this.size);
+          this.drawHex(hex)
 
           result = true;
           this.filterFlats(hex);
