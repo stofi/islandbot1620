@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const FB = require('fb')
 const fs = require('fs')
 const seedrandom = require("seedrandom")
@@ -116,9 +118,7 @@ db().then((result) => {
   console.log(`elevation:  ${MAX_ELEVATION}`);
   console.log(`step:  ${ELEVATION_STEP}`);
 
-
-  const private = require('./private.json')
-  const FACEBOOK_ACCESS_TOKEN = private.FACEBOOK_ACCESS_TOKEN || process.env.FACEBOOK_ACCESS_TOKEN
+  const FACEBOOK_ACCESS_TOKEN = process.env.FACEBOOK_ACCESS_TOKEN
   FB.setAccessToken(FACEBOOK_ACCESS_TOKEN)
 
   if (process.argv.length > 2 && process.argv[2] === '--dry-run') {

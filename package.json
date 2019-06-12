@@ -5,8 +5,9 @@
   "author": "Kryštof Rainisch <krystof.rainisch@sprites.co>",
   "license": "MIT",
   "dependencies": {
-    "canvas": "^2.4.1",
+    "canvas": "^2.5.0",
     "chroma-js": "^2.0.3",
+    "dotenv": "^8.0.0",
     "fb": "^2.0.0",
     "node-cron": "^2.0.3",
     "nouns": "^1.0.1",
