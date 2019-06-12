@@ -3,9 +3,8 @@ const bot = require('./bot.js')
 
 
 const job = new CronJob({
-    cronTime: "* */4 * * * *",
+    cronTime: "0 */4 * * * *",
     onTick: bot(),
-    start: true,
     timeZone: "Europe/Prague"
 })
 
