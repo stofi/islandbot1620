@@ -11,5 +11,8 @@
     "node-cron": "^2.0.3",
     "nouns": "^1.0.1",
     "seedrandom": "^3.0.1"
+  },
+  "scripts": {
+    "start": "node index"
   }
 }
