@@ -19,7 +19,7 @@ class Hexagon {
     this.id = id;
     this.elevation = null;
     this.parent = parent;
-    this.coors = {type:'hex', x:0, y:0, z:0}
+    this.coors = { type: 'hex', x: 0, y: 0, z: 0 }
   }
 
   toString() {
@@ -29,6 +29,7 @@ class Hexagon {
 
 class Map {
   constructor(radius, width, height, size, max_elevation, randomness, elevation_step) {
+
     // console.log(`+ map: ${size}`);
     this.width = width
     this.height = height
@@ -222,7 +223,7 @@ class Map {
           if (elevation == null && neighbours[i].elevation != null) {
             elevation = Math.floor(
               neighbours[i].elevation * (1 - this.elevation_step) +
-                Math.random() * neighbours[i].elevation * this.elevation_step
+              Math.random() * neighbours[i].elevation * this.elevation_step
             );
           } else if (
             neighbours[i].elevation != null &&
@@ -236,7 +237,7 @@ class Map {
         if (elevation != null) {
           hex.elevation = elevation;
 
-          neighbours = neighbours.filter(function(neighbour) {
+          neighbours = neighbours.filter(function (neighbour) {
             return neighbours.elevation == null;
           });
 
