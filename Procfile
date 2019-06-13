@@ -1,2 +1,2 @@
 web: node index.js
-clock: node clock.js
+clock: node bot.js
