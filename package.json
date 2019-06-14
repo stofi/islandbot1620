@@ -7,7 +7,6 @@
   "dependencies": {
     "canvas": "^2.5.0",
     "chroma-js": "^2.0.3",
-    "dotenv": "^8.0.0",
     "fb": "^2.0.0",
     "mongoose": "^5.5.15",
     "nouns": "^1.0.1",
