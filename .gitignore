@@ -3,3 +3,4 @@ yarn.lock
 node_modules
 test.js
 *.jpeg
+.vscode
