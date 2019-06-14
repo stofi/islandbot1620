@@ -1,3 +1,6 @@
 const app = require('./lib/bot.js')
+const database = require('./lib/database')
 
-app()
+app().then(() => {
+    database.close()
+})
