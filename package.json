@@ -8,7 +8,7 @@
     "canvas": "^2.5.0",
     "chroma-js": "^2.0.3",
     "fb": "^2.0.0",
-    "mongoose": "^5.5.15",
+    "mongoose": "^5.7.5",
     "nouns": "^1.0.1",
     "seedrandom": "^3.0.1"
   },
